@@ -1,0 +1,17 @@
+services:
+  landing:
+    build: .
+    image: jfmcss-landingv2
+    container_name: jfmcss-landingv2
+    restart: unless-stopped
+    ports:
+      - "3016:3000"
+    environment:
+      # define ADMIN_PASSWORD (y opcionalmente SESSION_SECRET) en un archivo .env junto a este compose
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?falta ADMIN_PASSWORD en .env}
+      - SESSION_SECRET=${SESSION_SECRET:-}
+    volumes:
+      - landing-data:/app/data
+
+volumes:
+  landing-data:

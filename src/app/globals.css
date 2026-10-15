@@ -272,3 +272,60 @@ a.wa-btn svg { animation: none; }
 #contacto .section-head h2 { font-size: clamp(36px,4vw,58px); }
 @media(max-width:900px) { .services-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:650px) { .services-grid { grid-template-columns: 1fr; } .svc-card { min-height: 0; padding: 30px 24px; } .work-grid { gap: 46px; } .section-intro { margin-top: -30px; margin-bottom: 35px; } }
+
+/* Theme switch, accessible in both desktop and mobile nav */
+.theme-btn { display:inline-flex; align-items:center; gap:8px; background:transparent; color:#d7deec; border:1px solid #343d51; border-radius:6px; padding:7px 11px; cursor:pointer; font:500 12px 'Space Grotesk',sans-serif; }
+.theme-btn:hover,.theme-btn:focus-visible { border-color:#7d93ba; }
+.theme-btn span:first-child { font-size:17px; line-height:1; }
+@media(max-width:900px) { .nav-links { gap:10px; } .theme-btn { padding:7px 9px; } }
+@media(max-width:460px) { .theme-btn span:last-child { display:none; } }
+
+/* Daylight editorial palette. Dark remains the base, including all existing admin screens. */
+html[data-theme="light"] { color-scheme:light; }
+html[data-theme="light"] body { background:#f8f7f4; color:#151c28; }
+html[data-theme="light"] nav.main-nav { background:rgba(248,247,244,.95); border-color:#d9dce0; }
+html[data-theme="light"] .nav-brand span,html[data-theme="light"] .section-head h2,html[data-theme="light"] h1.hero-title { color:#171d28; }
+html[data-theme="light"] .nav-brand img { filter:brightness(.12); }
+html[data-theme="light"] a.nav-link { color:#3f4b5c; }
+html[data-theme="light"] a.nav-link:hover { color:#101827; }
+html[data-theme="light"] .lang-btn,html[data-theme="light"] .theme-btn { color:#243247; border-color:#bdc6d1; }
+html[data-theme="light"] header#top { background:#f8f7f4; }
+html[data-theme="light"] .hero-fade { background:linear-gradient(90deg,#f8f7f4 25%,rgba(248,247,244,.98) 44%,rgba(248,247,244,.12) 95%); }
+html[data-theme="light"] h1.hero-title .grad { color:#465b7a; }
+html[data-theme="light"] p.hero-sub,html[data-theme="light"] .hero-tags,html[data-theme="light"] .hero-badge { color:#526176; }
+html[data-theme="light"] a.cta-primary { background:#17243a; color:#fff; }
+html[data-theme="light"] a.cta-primary:hover { background:#30415d; color:#fff; }
+html[data-theme="light"] a.cta-secondary { color:#243247; border-color:#b5bfcd; }
+html[data-theme="light"] .trusted-label { color:#17243a; }
+html[data-theme="light"] .trusted-logo img { filter:grayscale(1) brightness(.35); opacity:.72; }
+html[data-theme="light"] .trusted-logo:hover img { filter:none; opacity:1; }
+html[data-theme="light"] .section-head .num,html[data-theme="light"] .section-intro { color:#526176; }
+html[data-theme="light"] .services-grid,html[data-theme="light"] .stats-grid { background:#d4dae2; border-color:#d4dae2; }
+html[data-theme="light"] .svc-card { background:#fff; }
+html[data-theme="light"] .svc-card:hover { background:#f1f4f8; }
+html[data-theme="light"] .svc-card h3,html[data-theme="light"] .work-item h3 { color:#152236; }
+html[data-theme="light"] .svc-card p,html[data-theme="light"] .work-item p,html[data-theme="light"] .about-text p,html[data-theme="light"] .contact-text p { color:#536176; }
+html[data-theme="light"] .svc-icon.accent-a,html[data-theme="light"] .svc-icon.accent-b,html[data-theme="light"] .svc-icon.accent-c { background:#314a6e; color:#fff; }
+html[data-theme="light"] #nosotros,html[data-theme="light"] #contacto { background:#edf0f3; border-color:#d7dce4; }
+html[data-theme="light"] .stat-card { background:#fff; }
+html[data-theme="light"] .stat-card .value { color:#547095; }
+html[data-theme="light"] .stat-card .label { color:#1d2b3d; }
+html[data-theme="light"] .work-img { background:#e9edf2; border-color:#d7dce4; }
+html[data-theme="light"] .work-item .tag { color:#44638a; }
+html[data-theme="light"] .contact-email { color:#315d92; }
+html[data-theme="light"] form.contact-form input,html[data-theme="light"] form.contact-form textarea { background:#fff; border-color:#bec7d3; color:#17243a; }
+html[data-theme="light"] form.contact-form button { background:#17243a; color:#fff; }
+html[data-theme="light"] form.contact-form button:hover { background:#30415d; }
+html[data-theme="light"] footer { border-color:#d7dce4; }
+html[data-theme="light"] .footer-note { color:#5a687a; }
+html[data-theme="light"] .footer-left img { filter:brightness(.2); }
+html[data-theme="light"] a.admin-link { color:#61728c; }
+html[data-theme="light"] .form-thanks { color:#315d92; border-color:#a2b8d4; background:#e2ecf7; }
+html[data-theme="light"] .admin-page { background:#f8f7f4; color:#17243a; }
+html[data-theme="light"] .admin-title,html[data-theme="light"] .admin-brand-name { color:#17243a; }
+html[data-theme="light"] .admin-nav { border-color:#d7dce4; }
+html[data-theme="light"] .admin-card,html[data-theme="light"] .admin-login-card { background:#fff; border-color:#d7dce4; }
+html[data-theme="light"] .admin-card-fields input,html[data-theme="light"] .admin-card-fields textarea,html[data-theme="light"] .admin-login-card input { background:#f8fafc; color:#17243a; border-color:#c4cdda; }
+html[data-theme="light"] .admin-intro { color:#536176; }
+html[data-theme="light"] .admin-back { color:#315d92; }
+@media(max-width:900px) { html[data-theme="light"] .hero-fade { background:linear-gradient(90deg,#f8f7f4 10%,rgba(248,247,244,.9) 76%,rgba(248,247,244,.3)); } }

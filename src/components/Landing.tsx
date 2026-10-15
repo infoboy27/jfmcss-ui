@@ -365,7 +365,7 @@ export default function Landing() {
                 <h3>{pr.title}</h3>
                 <p>{pr.desc}</p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>

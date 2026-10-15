@@ -182,6 +182,7 @@ const FALLBACK_PROJECTS: Record<Lang, { tag: string; title: string; desc: string
 export default function Landing() {
   const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
   const [sent, setSent] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [portfolio, setPortfolio] = useState<StoredProject[] | null>(null);
 
   const es = lang === "es";
@@ -201,6 +202,12 @@ export default function Landing() {
   useEffect(() => {
     const saved = localStorage.getItem("jfmcss-lang");
     if (saved === "es" || saved === "en") setLang(saved);
+    const storedTheme = localStorage.getItem("jfmcss-theme");
+    const preferredTheme = storedTheme === "dark" || storedTheme === "light"
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    setTheme(preferredTheme);
+    document.documentElement.dataset.theme = preferredTheme;
     refreshPortfolio();
     const onFocus = () => refreshPortfolio();
     window.addEventListener("focus", onFocus);
@@ -212,6 +219,13 @@ export default function Landing() {
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("jfmcss-theme", next);
+  };
 
   const toggleLang = () => {
     const next: Lang = es ? "en" : "es";
@@ -245,6 +259,10 @@ export default function Landing() {
           <a href="#nosotros" className="nav-link">{t.navAbout}</a>
           <a href="#portafolio" className="nav-link">{t.navWork}</a>
           <a href="#contacto" className="nav-link">{t.navContact}</a>
+          <button type="button" className="theme-btn" onClick={toggleTheme} aria-label={theme === "dark" ? (es ? "Activar modo claro" : "Switch to light mode") : (es ? "Activar modo oscuro" : "Switch to dark mode")} title={theme === "dark" ? (es ? "Modo claro" : "Light mode") : (es ? "Modo oscuro" : "Dark mode")}>
+            <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+            <span>{theme === "dark" ? (es ? "Claro" : "Light") : (es ? "Oscuro" : "Dark")}</span>
+          </button>
           <button type="button" className="lang-btn" onClick={toggleLang}>
             {t.langButton}
           </button>

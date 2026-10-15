@@ -193,3 +193,55 @@ a.admin-back { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 @media (max-width: 480px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Editorial studio refresh — refined, product-first design */
+:root { color-scheme: dark; }
+body { background: #090b10; color: #f0f1f5; }
+nav.main-nav { background: rgba(9,11,16,.9); border-color: rgba(255,255,255,.09); backdrop-filter: blur(18px); }
+.nav-brand img { filter: none; }
+.lang-btn { border-radius: 6px; color: #c7d5ff; border-color: #343d51; background: transparent; }
+header#top { background: #090b10; min-height: min(860px,100svh); isolation: isolate; }
+.hero-fade { background: linear-gradient(90deg,#090b10 28%,rgba(9,11,16,.96) 45%,rgba(9,11,16,.12) 90%); }
+.hero-wrap { max-width: 1320px; }
+.hero-inner { max-width: 690px; }
+.hero-badge { border: 0; border-radius: 0; padding: 0; color: #9aa8c6; font-size: 11px; letter-spacing: .22em; }
+.hero-badge .dot { background: #e9eefc; animation: none; }
+h1.hero-title { font-size: clamp(46px,5.7vw,86px); letter-spacing: -.055em; line-height: 1.06; }
+h1.hero-title .grad { color: #d1d9ed; background: none; }
+p.hero-sub { max-width: 520px; color: #a2aaba; }
+a.cta-primary { background: #e9eefc; color: #101522; border-radius: 5px; box-shadow: none; }
+a.cta-primary:hover { background: #fff; color: #101522; box-shadow: none; }
+a.cta-secondary { border-radius: 5px; }
+.hero-tags { color: #8a94a8; }
+.scroll-hint { display: none; }
+.hero-product-art { position: absolute; z-index: 0; width: min(48vw,690px); right: max(2vw,calc((100vw - 1400px)/2)); top: 19%; transform: rotate(-4deg); pointer-events: none; }
+.hero-art-caption { font: 11px 'JetBrains Mono',monospace; letter-spacing: .17em; margin: 0 0 16px; color: #93a0b5; text-align: right; }
+.hero-art-frame { padding: 14px; background: #151b25; border: 1px solid #3b4556; box-shadow: 0 32px 100px rgba(0,0,0,.65); }
+.hero-art-top { display: flex; justify-content: space-between; font: 9px 'JetBrains Mono',monospace; letter-spacing: .08em; color: #aab7cc; padding: 2px 2px 13px; }
+.hero-art-image { aspect-ratio: 1.4; background: url('/assets/portfolio/medisoft.png') center/cover; border: 1px solid rgba(255,255,255,.12); }
+.hero-art-bottom { display: flex; justify-content: space-between; padding: 15px 3px 2px; color: #dce3ef; font: 12px 'Space Grotesk',sans-serif; }
+.trusted-strip { padding-top: 30px; }
+.trusted-label { font-size: clamp(18px,2vw,24px); font-weight: 500; }
+.trusted-label .dot { box-shadow: none; animation: none; }
+.trusted-logo { animation: none; }
+.section-head .num { color: #9eaac1; }
+.section-head h2 { letter-spacing: -.045em; }
+.svc-card { background: #10141d; border-color: #272e3b; border-radius: 6px; transition: border-color .25s, transform .25s; }
+.svc-icon { clip-path: none; border-radius: 6px; width: 44px; height: 44px; }
+.svc-icon.accent-a,.svc-icon.accent-b,.svc-icon.accent-c { background: #252e42; box-shadow: none; }
+.svc-card:hover .svc-icon, .svc-card:hover .svc-icon svg { transform: none; }
+#nosotros,#contacto { background: #0e1219; }
+.stat-card { border-radius: 5px; background: #151a23; border-color: #2a3341; }
+.stat-card .value { color: #d9e2f5; }
+.work-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 56px 28px; }
+.work-img { height: auto; aspect-ratio: 1.45; border-radius: 5px; background: #151a23; }
+.work-item h3 { font-size: 23px; letter-spacing: -.03em; }
+.work-item .tag { color: #a8b9dd; }
+form.contact-form button { background: #e9eefc; color: #101522; box-shadow: none; border-radius: 5px; }
+form.contact-form button:hover { box-shadow: none; background: #fff; }
+form.contact-form input,form.contact-form textarea { border-radius: 5px; }
+a.wa-btn { animation: none; border-radius: 5px; box-shadow: none; }
+a.wa-btn svg { animation: none; }
+@media(max-width:900px) { .hero-product-art { opacity: .28; width: 68vw; right: -18vw; top: 27%; } .hero-fade { background: linear-gradient(90deg,#090b10 10%,rgba(9,11,16,.8) 78%,rgba(9,11,16,.2)); } }
+@media(max-width:650px) { header#top { min-height: 730px; } .hero-product-art { width: 96vw; right: -37vw; top: 27%; opacity: .18; } .work-grid { grid-template-columns: 1fr; } .hero-tags { flex-wrap: wrap; gap: 13px; } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

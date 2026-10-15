@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
+import { useCallback, useEffect, useState } from "react";
 import type { StoredProject } from "@/lib/portfolio";
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -20,19 +19,21 @@ const I18N = {
     navWork: "Portafolio",
     navContact: "Contacto",
     badge: "software studio",
-    heroTitle1: "Convertimos ideas en",
-    heroTitle2: "software que funciona",
+    heroTitle1: "Ingeniería de software para",
+    heroTitle2: "ideas que importan.",
     heroSub:
-      "Apps móviles, plataformas web y soluciones digitales a la medida. Desarrollo moderno, práctico y orientado a resolver necesidades reales.",
+      "Diseñamos, construimos y operamos aplicaciones, plataformas e infraestructura. Del concepto al producto en producción.",
     ctaPrimary: "Inicia tu proyecto",
     ctaSecondary: "Ver trabajo",
-    servicesTitle: "Servicios",
-    aboutTitle: "Sobre nosotros",
+    servicesTitle: "Lo que construimos",
+    servicesIntro: "Del producto a la infraestructura: ingeniería con foco en el uso real.",
+    aboutTitle: "Cómo trabajamos",
     aboutBody1:
-      "JFMCSS es un estudio de desarrollo de software que combina ingeniería, diseño de producto y nuevas tecnologías para construir aplicaciones funcionales, escalables y fáciles de usar.",
+      "Diseñamos productos digitales a partir del problema, no de una plantilla. Prototipamos, desarrollamos e iteramos con atención al detalle.",
     aboutBody2:
       "Trabajamos con empresas, profesionales y emprendedores que necesitan convertir una idea en un producto digital real — desde el prototipo hasta la infraestructura en producción.",
-    workTitle: "Portafolio",
+    workTitle: "Trabajo seleccionado",
+    workIntro: "Productos digitales, interfaces y sistemas diseñados para necesidades concretas.",
     contactTitle: "Hablemos",
     contactBody:
       "Cuéntanos qué quieres construir. Respondemos en menos de 24 horas.",
@@ -44,7 +45,7 @@ const I18N = {
     waIntro: "Hola JFMCSS, quiero cotizar un proyecto.",
     waName: "Nombre",
     waMessage: "Mensaje",
-    footerTag: "construido con código y café",
+    footerTag: "Diseño, producto e ingeniería",
     waLabel: "Escríbenos",
     waText: "Hola JFMCSS, quiero cotizar un proyecto",
     langButton: "ES → EN",
@@ -57,19 +58,21 @@ const I18N = {
     navWork: "Work",
     navContact: "Contact",
     badge: "software studio",
-    heroTitle1: "We turn ideas into",
-    heroTitle2: "software that works",
+    heroTitle1: "Software engineering for",
+    heroTitle2: "ideas that matter.",
     heroSub:
-      "Mobile apps, web platforms and custom digital solutions. Modern, practical development focused on solving real needs.",
+      "We design, build and operate applications, platforms and infrastructure. From first concept to live production.",
     ctaPrimary: "Start your project",
     ctaSecondary: "See our work",
-    servicesTitle: "Services",
-    aboutTitle: "About us",
+    servicesTitle: "What we build",
+    servicesIntro: "From product to infrastructure: engineering focused on real-world use.",
+    aboutTitle: "How we work",
     aboutBody1:
-      "JFMCSS is a software development studio combining engineering, product design and new technologies to build functional, scalable, easy-to-use applications.",
+      "We start with the problem, not a template. We prototype, engineer and iterate with care for the details.",
     aboutBody2:
       "We work with companies, professionals and founders who need to turn an idea into a real digital product — from prototype to production infrastructure.",
-    workTitle: "Work",
+    workTitle: "Selected work",
+    workIntro: "Digital products, interfaces and systems designed around real needs.",
     contactTitle: "Let's talk",
     contactBody: "Tell us what you want to build. We reply within 24 hours.",
     formName: "Name",
@@ -80,7 +83,7 @@ const I18N = {
     waIntro: "Hi JFMCSS, I want a project quote.",
     waName: "Name",
     waMessage: "Message",
-    footerTag: "built with code & coffee",
+    footerTag: "Design, product & engineering",
     waLabel: "Chat with us",
     waText: "Hi JFMCSS, I want a project quote",
     langButton: "EN → ES",
@@ -146,42 +149,41 @@ const SERVICES: Record<Lang, { icon: string; title: string; desc: string }[]> = 
   ],
 };
 
-const STATS: Record<Lang, { value: string; label: string }[]> = {
+const PRINCIPLES: Record<Lang, { value: string; label: string }[]> = {
   es: [
-    { value: "+10", label: "años programando" },
-    { value: "+30", label: "proyectos entregados" },
-    { value: "24h", label: "tiempo de respuesta" },
-    { value: "100%", label: "a la medida" },
+    { value: "01", label: "Entender antes de construir" },
+    { value: "02", label: "Diseñar para personas" },
+    { value: "03", label: "Ingeniería preparada para crecer" },
+    { value: "04", label: "Entregar y seguir mejorando" },
   ],
   en: [
-    { value: "+10", label: "years coding" },
-    { value: "+30", label: "projects shipped" },
-    { value: "24h", label: "response time" },
-    { value: "100%", label: "custom built" },
+    { value: "01", label: "Understand before building" },
+    { value: "02", label: "Design for people" },
+    { value: "03", label: "Engineer for growth" },
+    { value: "04", label: "Ship and keep improving" },
   ],
 };
 
-const FALLBACK_PROJECTS: Record<
-  Lang,
-  { tag: string; title: string; desc: string; placeholder: string }[]
-> = {
+const FALLBACK_PROJECTS: Record<Lang, { tag: string; title: string; desc: string; img: string }[]> = {
   es: [
-    { tag: "App móvil", title: "Proyecto destacado 1", desc: "Administra estos proyectos desde la página admin (enlace en el pie).", placeholder: "screenshot app móvil" },
-    { tag: "Plataforma web", title: "Proyecto destacado 2", desc: "Administra estos proyectos desde la página admin (enlace en el pie).", placeholder: "screenshot plataforma web" },
-    { tag: "Automatización", title: "Proyecto destacado 3", desc: "Administra estos proyectos desde la página admin (enlace en el pie).", placeholder: "screenshot dashboard" },
+    { tag: "Software clínico", title: "Medisoft", desc: "Gestión clínica, citas y operaciones en una sola plataforma.", img: "/assets/portfolio/medisoft.png" },
+    { tag: "Producto digital", title: "Carloop", desc: "Diseño y desarrollo de experiencias digitales.", img: "/assets/portfolio/carloop.png" },
+    { tag: "Datos y analítica", title: "Datapilot", desc: "Interfaces para explorar y utilizar información.", img: "/assets/portfolio/datapilot.png" },
+    { tag: "Plataforma web", title: "Rentapp", desc: "Experiencias digitales para gestionar procesos.", img: "/assets/portfolio/rentapp.png" },
   ],
   en: [
-    { tag: "Mobile app", title: "Featured project 1", desc: "Manage these projects from the admin page (link in the footer).", placeholder: "screenshot app móvil" },
-    { tag: "Web platform", title: "Featured project 2", desc: "Manage these projects from the admin page (link in the footer).", placeholder: "screenshot plataforma web" },
-    { tag: "Automation", title: "Featured project 3", desc: "Manage these projects from the admin page (link in the footer).", placeholder: "screenshot dashboard" },
+    { tag: "Clinical software", title: "Medisoft", desc: "Clinical management, appointments and operations in one platform.", img: "/assets/portfolio/medisoft.png" },
+    { tag: "Digital product", title: "Carloop", desc: "Design and development of digital experiences.", img: "/assets/portfolio/carloop.png" },
+    { tag: "Data & analytics", title: "Datapilot", desc: "Interfaces built to explore and use information.", img: "/assets/portfolio/datapilot.png" },
+    { tag: "Web platform", title: "Rentapp", desc: "Digital experiences to manage workflows.", img: "/assets/portfolio/rentapp.png" },
   ],
 };
 
 export default function Landing() {
   const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
   const [sent, setSent] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [portfolio, setPortfolio] = useState<StoredProject[] | null>(null);
-  const canvasHost = useRef<HTMLDivElement>(null);
 
   const es = lang === "es";
   const t = I18N[lang];
@@ -200,6 +202,12 @@ export default function Landing() {
   useEffect(() => {
     const saved = localStorage.getItem("jfmcss-lang");
     if (saved === "es" || saved === "en") setLang(saved);
+    const storedTheme = localStorage.getItem("jfmcss-theme");
+    const preferredTheme = storedTheme === "dark" || storedTheme === "light"
+      ? storedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    setTheme(preferredTheme);
+    document.documentElement.dataset.theme = preferredTheme;
     refreshPortfolio();
     const onFocus = () => refreshPortfolio();
     window.addEventListener("focus", onFocus);
@@ -212,190 +220,18 @@ export default function Landing() {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("jfmcss-theme", next);
+  };
+
   const toggleLang = () => {
     const next: Lang = es ? "en" : "es";
     setLang(next);
     localStorage.setItem("jfmcss-lang", next);
   };
-
-  // ── Escena 3D (Three.js) ────────────────────────────────────────────────────
-  useEffect(() => {
-    const host = canvasHost.current;
-    if (!host) return;
-
-    const mouse = { x: 0, y: 0 };
-    const onMove = (e: MouseEvent) => {
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
-    };
-    window.addEventListener("mousemove", onMove);
-
-    const W = () => host.clientWidth;
-    const H = () => host.clientHeight;
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x05070d, 0.055);
-    const camera = new THREE.PerspectiveCamera(50, W() / H(), 0.1, 100);
-    camera.position.set(0, 0.4, 11);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(W(), H());
-    host.appendChild(renderer.domElement);
-
-    const group = new THREE.Group();
-    scene.add(group);
-    // mantiene la figura en el lado derecho del área visible en cualquier zoom/aspecto
-    const fit = () => {
-      const aspect = W() / Math.max(1, H());
-      const halfW = Math.tan(((camera.fov / 2) * Math.PI) / 180) * camera.position.z * aspect;
-      group.position.x = Math.max(2.2, Math.min(halfW * 0.52, 7));
-      const s = Math.max(0.65, Math.min(1, aspect / 1.7));
-      group.scale.set(s, s, s);
-    };
-    fit();
-
-    // red de nodos
-    const NODES = 46,
-      R = 3.4;
-    const nodePos: THREE.Vector3[] = [];
-    for (let i = 0; i < NODES; i++) {
-      const phi = Math.acos(2 * Math.random() - 1),
-        th = Math.random() * Math.PI * 2;
-      const r = R * (0.55 + Math.random() * 0.45);
-      nodePos.push(
-        new THREE.Vector3(
-          r * Math.sin(phi) * Math.cos(th),
-          r * Math.cos(phi) * 0.8,
-          r * Math.sin(phi) * Math.sin(th),
-        ),
-      );
-    }
-    const nodeGeo = new THREE.SphereGeometry(0.055, 10, 10);
-    const nodeMatA = new THREE.MeshBasicMaterial({ color: 0x00cafe });
-    const nodeMatB = new THREE.MeshBasicMaterial({ color: 0x4a78ec });
-    const pulses: THREE.Mesh[] = [];
-    nodePos.forEach((p, i) => {
-      const m = new THREE.Mesh(nodeGeo, i % 3 === 0 ? nodeMatA : nodeMatB);
-      m.position.copy(p);
-      m.userData.base = 0.7 + Math.random() * 0.9;
-      m.userData.ph = Math.random() * Math.PI * 2;
-      group.add(m);
-      pulses.push(m);
-    });
-    // aristas entre vecinos cercanos
-    const edges: THREE.Vector3[] = [];
-    for (let i = 0; i < NODES; i++)
-      for (let j = i + 1; j < NODES; j++) {
-        if (nodePos[i].distanceTo(nodePos[j]) < 1.9) edges.push(nodePos[i], nodePos[j]);
-      }
-    const lineGeo = new THREE.BufferGeometry().setFromPoints(edges);
-    const lines = new THREE.LineSegments(
-      lineGeo,
-      new THREE.LineBasicMaterial({ color: 0x1050d0, transparent: true, opacity: 0.35 }),
-    );
-    group.add(lines);
-
-    // cilindros de base de datos
-    const db = new THREE.Group();
-    const dbMat = new THREE.MeshBasicMaterial({ color: 0x4a78ec, wireframe: true, transparent: true, opacity: 0.5 });
-    for (let i = 0; i < 3; i++) {
-      const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.42, 22, 1), dbMat);
-      cyl.position.y = i * 0.62 - 0.62;
-      db.add(cyl);
-    }
-    db.position.set(-1.4, -2.2, 1.2);
-    db.scale.set(0.9, 0.9, 0.9);
-    group.add(db);
-
-    // fragmentos de código flotantes
-    const makeTextSprite = (text: string, color: string) => {
-      const c = document.createElement("canvas");
-      c.width = 512;
-      c.height = 128;
-      const ctx = c.getContext("2d")!;
-      ctx.font = '500 54px "JetBrains Mono", monospace';
-      ctx.fillStyle = color;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(text, 256, 64);
-      const tex = new THREE.CanvasTexture(c);
-      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.85 });
-      const sp = new THREE.Sprite(mat);
-      sp.scale.set(3.2, 0.8, 1);
-      return sp;
-    };
-    const frags: THREE.Sprite[] = [];
-    const texts: [string, string][] = [
-      ["</>", "#00cafe"],
-      ["{ api }", "#7d8fd0"],
-      ["deploy()", "#4a78ec"],
-      ["SELECT *", "#00cafe"],
-      ["npm run build", "#7d8fd0"],
-    ];
-    texts.forEach(([txt, col], i) => {
-      const sp = makeTextSprite(txt, col);
-      const a = (i / texts.length) * Math.PI * 2;
-      sp.userData = { a, r: 4.6 + (i % 2) * 0.9, y: -1.5 + i * 0.9, sp: 0.12 + (i % 3) * 0.04 };
-      group.add(sp);
-      frags.push(sp);
-    });
-
-    // partículas ambientales
-    const pGeo = new THREE.BufferGeometry();
-    const pCount = 350,
-      pArr = new Float32Array(pCount * 3);
-    for (let i = 0; i < pCount * 3; i++) pArr[i] = (Math.random() - 0.5) * 30;
-    pGeo.setAttribute("position", new THREE.BufferAttribute(pArr, 3));
-    const points = new THREE.Points(
-      pGeo,
-      new THREE.PointsMaterial({ color: 0x3a4a75, size: 0.045, transparent: true, opacity: 0.7 }),
-    );
-    scene.add(points);
-
-    const onResize = () => {
-      camera.aspect = W() / Math.max(1, H());
-      camera.updateProjectionMatrix();
-      renderer.setSize(W(), H());
-      fit();
-    };
-    window.addEventListener("resize", onResize);
-    const ro = new ResizeObserver(onResize);
-    ro.observe(host);
-
-    let raf = 0;
-    const clock = new THREE.Clock();
-    const tick = () => {
-      const time = clock.getElapsedTime();
-      const speed = ANIMATION_SPEED;
-      group.rotation.y = time * 0.08 * speed + mouse.x * 0.35;
-      group.rotation.x = mouse.y * 0.18;
-      db.rotation.y = time * 0.4 * speed;
-      pulses.forEach((m) => {
-        const s = m.userData.base + Math.sin(time * 1.6 * speed + m.userData.ph) * 0.35;
-        m.scale.set(s, s, s);
-      });
-      frags.forEach((f) => {
-        const a = f.userData.a + time * f.userData.sp * speed;
-        f.position.set(
-          Math.cos(a) * f.userData.r,
-          f.userData.y + Math.sin(time * 0.7 + f.userData.a) * 0.3,
-          Math.sin(a) * f.userData.r,
-        );
-      });
-      points.rotation.y = time * 0.01 * speed;
-      renderer.render(scene, camera);
-      raf = requestAnimationFrame(tick);
-    };
-    tick();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("resize", onResize);
-      ro.disconnect();
-      renderer.dispose();
-      host.removeChild(renderer.domElement);
-    };
-  }, []);
 
   const projects = portfolio
     ? portfolio.map((pr) => ({
@@ -405,7 +241,7 @@ export default function Landing() {
         img: pr.img || null,
         placeholder: t.noImg,
       }))
-    : FALLBACK_PROJECTS[lang].map((pr) => ({ ...pr, img: null as string | null }));
+    : FALLBACK_PROJECTS[lang].map((pr) => ({ ...pr, placeholder: t.noImg }));
 
   const waLink = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(t.waText)}`;
 
@@ -423,6 +259,10 @@ export default function Landing() {
           <a href="#nosotros" className="nav-link">{t.navAbout}</a>
           <a href="#portafolio" className="nav-link">{t.navWork}</a>
           <a href="#contacto" className="nav-link">{t.navContact}</a>
+          <button type="button" className="theme-btn" onClick={toggleTheme} aria-label={theme === "dark" ? (es ? "Activar modo claro" : "Switch to light mode") : (es ? "Activar modo oscuro" : "Switch to dark mode")} title={theme === "dark" ? (es ? "Modo claro" : "Light mode") : (es ? "Modo oscuro" : "Dark mode")}>
+            <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+            <span>{theme === "dark" ? (es ? "Claro" : "Light") : (es ? "Oscuro" : "Dark")}</span>
+          </button>
           <button type="button" className="lang-btn" onClick={toggleLang}>
             {t.langButton}
           </button>
@@ -431,7 +271,7 @@ export default function Landing() {
 
       {/* HERO */}
       <header id="top">
-        <div id="canvas-host" ref={canvasHost} />
+        <div className="hero-product-art" aria-hidden="true"><div className="hero-art-caption">SELECTED WORK / 2026</div><div className="hero-art-frame"><div className="hero-art-top"><span>JFMCSS / PRODUCT ENGINEERING</span><span>01 — 04</span></div><div className="hero-art-image" /><div className="hero-art-bottom">Built for the real world. <span>↗</span></div></div></div>
         <div className="hero-fade" />
         <div className="hero-wrap">
           <div className="hero-inner">
@@ -480,6 +320,7 @@ export default function Landing() {
           <span className="num">01</span>
           <h2>{t.servicesTitle}</h2>
         </div>
+        <p className="section-intro">{t.servicesIntro}</p>
         <div className="services-grid">
           {SERVICES[lang].map((svc, i) => (
             <div className="svc-card" key={svc.icon}>
@@ -505,7 +346,7 @@ export default function Landing() {
             <p>{t.aboutBody2}</p>
           </div>
           <div className="stats-grid">
-            {STATS[lang].map((st) => (
+            {PRINCIPLES[lang].map((st) => (
               <div className="stat-card" key={st.label}>
                 <div className="value">{st.value}</div>
                 <div className="label">{st.label}</div>
@@ -521,10 +362,11 @@ export default function Landing() {
           <span className="num">03</span>
           <h2>{t.workTitle}</h2>
         </div>
+        <p className="section-intro">{t.workIntro}</p>
         <div className="work-grid">
           {projects.map((pr, i) => (
-            <div className="work-item" key={i}>
-              <div className="work-img">
+            <article className="work-item" key={`${pr.title}-${i}`}>
+              <div className="work-img"><span className="work-index">{String(i + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
                 {pr.img ? (
                   <div
                     className="img"
@@ -541,7 +383,7 @@ export default function Landing() {
                 <h3>{pr.title}</h3>
                 <p>{pr.desc}</p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </section>

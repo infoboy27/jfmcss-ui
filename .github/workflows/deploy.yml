@@ -1,0 +1,90 @@
+# Cada push a main compila y, si pasa, despliega jfmcss.com en 163.245.207.38.
+# El lado servidor es deploy/cd/jfmcss-landing-deploy.sh, que hace health check
+# y vuelve solo al commit anterior si la version nueva no levanta.
+#
+# Requiere el secreto DEPLOY_SSH_KEY (llave que en el servidor solo puede
+# ejecutar ese script). Sin el secreto el build corre igual y el deploy se
+# omite con un aviso. Manual: Actions -> Deploy -> Run workflow (status/rollback).
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "deploy | status | rollback"
+        required: true
+        default: deploy
+        type: choice
+        options: [deploy, status, rollback]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    if: github.event_name == 'push' || inputs.action == 'deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # next build tambien hace el typecheck
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+  deploy:
+    name: ${{ github.event_name == 'push' && 'deploy' || inputs.action }}
+    needs: build
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HAS_KEY: ${{ secrets.DEPLOY_SSH_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aviso si falta el secreto
+        if: env.HAS_KEY != 'true'
+        run: echo "::warning::Falta el secreto DEPLOY_SSH_KEY. El build paso pero NO se desplego."
+      - name: Llave SSH
+        if: env.HAS_KEY == 'true'
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          cp deploy/cd/known_hosts ~/.ssh/known_hosts
+      - name: Ejecutar
+        if: env.HAS_KEY == 'true'
+        env:
+          ACTION: ${{ github.event_name == 'push' && 'deploy' || inputs.action }}
+        run: |
+          case "$ACTION" in
+            deploy) CMD="deploy ${GITHUB_SHA}" ;;
+            *) CMD="$ACTION" ;;
+          esac
+          # sin pipefail el paso toma el exit code de tee y un ssh fallido sale verde
+          set -o pipefail
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes -o ServerAliveInterval=30 -p 1600 \
+            ubuntu@163.245.207.38 "$CMD" | tee status.json
+      - name: Resumen
+        if: always() && env.HAS_KEY == 'true'
+        run: |
+          {
+            echo "### ${GITHUB_SHA:0:7}"
+            echo '```json'
+            cat status.json 2>/dev/null || echo '(sin estado)'
+            echo '```'
+            echo "- https://jfmcss.com"
+          } >> "$GITHUB_STEP_SUMMARY"

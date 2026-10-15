@@ -25,13 +25,15 @@ const I18N = {
       "Diseñamos, construimos y operamos aplicaciones, plataformas e infraestructura. Del concepto al producto en producción.",
     ctaPrimary: "Inicia tu proyecto",
     ctaSecondary: "Ver trabajo",
-    servicesTitle: "Servicios",
-    aboutTitle: "Sobre nosotros",
+    servicesTitle: "Lo que construimos",
+    servicesIntro: "Del producto a la infraestructura: ingeniería con foco en el uso real.",
+    aboutTitle: "Cómo trabajamos",
     aboutBody1:
-      "JFMCSS es un estudio de desarrollo de software que combina ingeniería, diseño de producto y nuevas tecnologías para construir aplicaciones funcionales, escalables y fáciles de usar.",
+      "Diseñamos productos digitales a partir del problema, no de una plantilla. Prototipamos, desarrollamos e iteramos con atención al detalle.",
     aboutBody2:
       "Trabajamos con empresas, profesionales y emprendedores que necesitan convertir una idea en un producto digital real — desde el prototipo hasta la infraestructura en producción.",
-    workTitle: "Portafolio",
+    workTitle: "Trabajo seleccionado",
+    workIntro: "Productos digitales, interfaces y sistemas diseñados para necesidades concretas.",
     contactTitle: "Hablemos",
     contactBody:
       "Cuéntanos qué quieres construir. Respondemos en menos de 24 horas.",
@@ -62,13 +64,15 @@ const I18N = {
       "We design, build and operate applications, platforms and infrastructure. From first concept to live production.",
     ctaPrimary: "Start your project",
     ctaSecondary: "See our work",
-    servicesTitle: "Services",
-    aboutTitle: "About us",
+    servicesTitle: "What we build",
+    servicesIntro: "From product to infrastructure: engineering focused on real-world use.",
+    aboutTitle: "How we work",
     aboutBody1:
-      "JFMCSS is a software development studio combining engineering, product design and new technologies to build functional, scalable, easy-to-use applications.",
+      "We start with the problem, not a template. We prototype, engineer and iterate with care for the details.",
     aboutBody2:
       "We work with companies, professionals and founders who need to turn an idea into a real digital product — from prototype to production infrastructure.",
-    workTitle: "Work",
+    workTitle: "Selected work",
+    workIntro: "Digital products, interfaces and systems designed around real needs.",
     contactTitle: "Let's talk",
     contactBody: "Tell us what you want to build. We reply within 24 hours.",
     formName: "Name",
@@ -145,18 +149,18 @@ const SERVICES: Record<Lang, { icon: string; title: string; desc: string }[]> = 
   ],
 };
 
-const STATS: Record<Lang, { value: string; label: string }[]> = {
+const PRINCIPLES: Record<Lang, { value: string; label: string }[]> = {
   es: [
-    { value: "+10", label: "años programando" },
-    { value: "+30", label: "proyectos entregados" },
-    { value: "24h", label: "tiempo de respuesta" },
-    { value: "100%", label: "a la medida" },
+    { value: "01", label: "Entender antes de construir" },
+    { value: "02", label: "Diseñar para personas" },
+    { value: "03", label: "Ingeniería preparada para crecer" },
+    { value: "04", label: "Entregar y seguir mejorando" },
   ],
   en: [
-    { value: "+10", label: "years coding" },
-    { value: "+30", label: "projects shipped" },
-    { value: "24h", label: "response time" },
-    { value: "100%", label: "custom built" },
+    { value: "01", label: "Understand before building" },
+    { value: "02", label: "Design for people" },
+    { value: "03", label: "Engineer for growth" },
+    { value: "04", label: "Ship and keep improving" },
   ],
 };
 
@@ -298,6 +302,7 @@ export default function Landing() {
           <span className="num">01</span>
           <h2>{t.servicesTitle}</h2>
         </div>
+        <p className="section-intro">{t.servicesIntro}</p>
         <div className="services-grid">
           {SERVICES[lang].map((svc, i) => (
             <div className="svc-card" key={svc.icon}>
@@ -323,7 +328,7 @@ export default function Landing() {
             <p>{t.aboutBody2}</p>
           </div>
           <div className="stats-grid">
-            {STATS[lang].map((st) => (
+            {PRINCIPLES[lang].map((st) => (
               <div className="stat-card" key={st.label}>
                 <div className="value">{st.value}</div>
                 <div className="label">{st.label}</div>
@@ -339,10 +344,11 @@ export default function Landing() {
           <span className="num">03</span>
           <h2>{t.workTitle}</h2>
         </div>
+        <p className="section-intro">{t.workIntro}</p>
         <div className="work-grid">
           {projects.map((pr, i) => (
-            <div className="work-item" key={i}>
-              <div className="work-img">
+            <article className="work-item" key={`${pr.title}-${i}`}>
+              <div className="work-img"><span className="work-index">{String(i + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
                 {pr.img ? (
                   <div
                     className="img"
